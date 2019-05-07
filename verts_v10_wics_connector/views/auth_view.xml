@@ -1,0 +1,123 @@
+<odoo>
+	<data>
+		<!-- Auth Tree View -->
+		<record id="auth_tree_views" model="ir.ui.view">
+			<field name="name">api.auth.tree</field>
+			<field name="model">api.auth</field>
+			<field name="arch" type="xml">
+				<tree string="Authentication">
+					<!--<field name="name"/>-->
+					<field name="auth_key"/>
+					<field name="secret_key"/>
+				</tree>
+			</field>
+		</record>
+		<!-- Auth Form View -->
+		<record id="category_name_form_views" model="ir.ui.view">
+			<field name="name">api.auth.form</field>
+			<field name="model">api.auth</field>
+			<field name="arch" type="xml">
+				<form string="Authentication">
+					<sheet>
+						<group>
+							<group>
+								<!--<field name="name" placeholder="Name"/>-->
+								<field name="auth_key" required="1" placeholder="Authentication Key"/>
+								<field name="secret_key" required="1" placeholder="Secret key"/>
+								<button name="action_request" string="Test" type="object" class="btn-primary"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!--Authentication Action -->
+		<record id="action_api_auth_id" model="ir.actions.act_window">
+			<field name="name">Authentication</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">api.auth</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="auth_tree_views" />
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="Api Authentication"
+			  id="menu_api_id"
+              parent="base.menu_administration"
+              groups="base.group_erp_manager,base.group_user"
+        />
+
+        <menuitem name="Authentication"
+              parent="menu_api_id"
+              id="menu_auth_api_id"
+              action="verts_v10_wics_connector.action_api_auth_id"
+              groups="base.group_erp_manager,base.group_user"
+        />
+
+		<!-- Shipment Time Interval Tree View -->
+		<record id="ship_time_interval_tree_views" model="ir.ui.view">
+			<field name="name">ship.time.interval.tree</field>
+			<field name="model">ship.time.interval</field>
+			<field name="arch" type="xml">
+				<tree string="Shipment Time Interval">
+					<field name="name"/>
+				</tree>
+			</field>
+		</record>
+		<!-- Shipment Time Interval Form View -->
+		<record id="ship_time_interval_form_views" model="ir.ui.view">
+			<field name="name">ship.time.interval.form</field>
+			<field name="model">ship.time.interval</field>
+			<field name="arch" type="xml">
+				<form string="Shipment Time Interval">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" required="1"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!--Shipement Time Interval Action -->
+		<record id="action_ship_time_interval_id" model="ir.actions.act_window">
+			<field name="name">Shipment Check Interval</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">ship.time.interval</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="ship_time_interval_tree_views" />
+			<field name="view_mode">tree,form</field>
+		</record>
+
+        <menuitem name="Shipment Check Interval"
+              parent="menu_api_id"
+              id="menu_ship_interval_id"
+              action="verts_v10_wics_connector.action_ship_time_interval_id"
+              groups="base.group_erp_manager,base.group_user"
+        />
+
+		<record id="stock_view_picking_form" model="ir.ui.view">
+			<field name="name">stock.picking.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form" />
+			<field name="arch" type="xml">
+				<!--<xpath expr="//form/header/button[@name='do_new_transfer']" position="before">-->
+					<!--<button name="action_request2" string="Send Request" type="object" states="draft,done" class="btn-primary"/>-->
+				<!--</xpath>-->
+				<xpath expr="//page[3]" position="after">
+					<page string="delivery">
+						<group>
+						<group>
+							<field name="trace_and_trace"/>
+							<field name="trace_and_url"/>
+						</group>
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+	</data>
+</odoo>
