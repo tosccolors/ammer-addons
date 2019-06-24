@@ -26,12 +26,12 @@
     'version': '1.0',
     'description': """
 APi Authentication Management.
-====================
+================================
 
     """,
     'author': 'VERTS Services India Private Limited',
     'website': 'https://www.verts.co.in',
-    'depends': ['base','stock','queue'],
+    'depends': ['base','stock','queue_job'],
     'data': [
         'security/ir.model.access.csv',
         'views/auth_view.xml',

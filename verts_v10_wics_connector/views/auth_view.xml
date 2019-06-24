@@ -1,5 +1,19 @@
 <odoo>
 	<data>
+
+		<!-- partner form view Inherit -->
+		<record id="base_partner_form_inherit" model="ir.ui.view">
+			<field name="name">res.partner.form</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml">
+				<field name="street2" position="after">
+					<field name="house_no" placeholder="huisnummer"/>
+					<field name="toegevoegd" placeholder="toegevoegd"/>
+				</field>
+			</field>
+		</record>
+
 		<!-- Auth Tree View -->
 		<record id="auth_tree_views" model="ir.ui.view">
 			<field name="name">api.auth.tree</field>
@@ -98,26 +112,61 @@
               action="verts_v10_wics_connector.action_ship_time_interval_id"
               groups="base.group_erp_manager,base.group_user"
         />
-
+		<!-- Stock Picking Form view Inherit -->
 		<record id="stock_view_picking_form" model="ir.ui.view">
 			<field name="name">stock.picking.form</field>
 			<field name="model">stock.picking</field>
 			<field name="inherit_id" ref="stock.view_picking_form" />
 			<field name="arch" type="xml">
-				<!--<xpath expr="//form/header/button[@name='do_new_transfer']" position="before">-->
-					<!--<button name="action_request2" string="Send Request" type="object" states="draft,done" class="btn-primary"/>-->
-				<!--</xpath>-->
+				<xpath expr="//form/header/button[@name='do_new_transfer']" position="before">
+					<button name="create_order_job"
+							string="Create Order"
+							type="object"
+							attrs="{'invisible': [('order_status', '!=','failure')]}"
+							class="btn-primary"/>
+
+
+
+				</xpath>
 				<xpath expr="//page[3]" position="after">
 					<page string="delivery">
 						<group>
-						<group>
-							<field name="trace_and_trace"/>
-							<field name="trace_and_url"/>
-						</group>
+							<group>
+								<field name="trace_and_trace"/>
+								<field name="trace_and_url"/>
+								<field name="order_status"/>
+								<field name="issue" attrs="{'invisible': [('order_status', '!=','failure')]}"/>
+								<field name="job_id"/>
+								<field name="shipment_job_id"/>
+							</group>
 						</group>
 					</page>
 				</xpath>
 			</field>
 		</record>
+		<!-- Stock Picking Tree view Inherit -->
+		<record id="stock_vpicktree" model="ir.ui.view">
+			<field name="name">stock.picking.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.vpicktree" />
+			<field name="arch" type="xml">
+				<field name="origin" position="after">
+					<field name="order_status"/>
+				</field>
+			</field>
+		</record>
+
+		<!-- Queue Job Form view Inherit -->
+ 		<!--<record id="queue_view_queue_job_form" model="ir.ui.view">-->
+			<!--<field name="name">queue.job.form</field>-->
+			<!--<field name="model">queue.job</field>-->
+			<!--<field name="inherit_id" ref="queue_job.view_queue_job_form" />-->
+			<!--<field name="arch" type="xml">-->
+				<!--<field name="channel" position="after">-->
+					<!--<field name="do_id"/>-->
+				<!--</field>-->
+			<!--</field>-->
+		<!--</record>-->
+		<!-- Queue Job Form view Inherit -->
 	</data>
 </odoo>
