@@ -65,7 +65,7 @@
 			<field name="inherit_id" ref="stock.view_picking_form" />
 			<field name="arch" type="xml">
 				<xpath expr="//form/header/button[@name='do_new_transfer']" position="attributes">
-					<attribute name="attrs">{'invisible':[ ('state', 'not in', ['draft','partially_available','assigned']),
+					<attribute name="attrs">{'invisible':[('state', 'not in', ['draft','partially_available','assigned']),
 					('wics_status', 'not in', ['failure'])]}<attribute/>
 				</xpath>
 				<xpath expr="//page[3]" position="after">
@@ -75,7 +75,7 @@
 								<field name="trace_and_trace"/>
 								<field name="trace_and_url"/>
 								<field name="wics_status"/>
-								<field name="issue" attrs="{'invisible': [('order_status', '!=','failure')]}"/>
+								<field name="issue" attrs="{'invisible': [('wics_status', '!=','failure')]}"/>
 								<field name="job_id"/>
 							</group>
 						</group>

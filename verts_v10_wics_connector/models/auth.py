@@ -79,8 +79,9 @@ class StockIPicking(models.Model):
 
     trace_and_trace = fields.Char(string="Trace and Trace")
     trace_and_url = fields.Char(string="Trace and Trace Url")
-    state = fields.Selection(selection_add=[('shipped', 'Shipped')])
-    wics_status = fields.Selection([('success', 'WICS accepted'), ('failure', 'WICS rejected')], string='Status')
+    wics_status = fields.Selection([('success', 'WICS accepted'), ('failure', 'WICS rejected'), ('shipped',
+                                                                                                 'WICS shipped')],
+                                   string='Status')
     job_id = fields.Many2one('queue.job', string='Order Job', )
     issue = fields.Text(string='Issue')
 
@@ -194,11 +195,11 @@ class StockIPicking(models.Model):
                     self.wics_status = 'success'
                     self.with_context(wics=False).action_done()
 
-        # here is check_shipment() cron job method for check order shipments, configurable in cron, default once
-        # every hour
+    # here is check_shipment() cron job method for check order shipments,
+    # configurable in cron, default once every hour
     @api.multi
     def check_shipment(self):
-        picking_ids = self.search(['state', '!=', 'shipped'])
+        picking_ids = self.search(['wics_status', '=', 'success'])
         if not picking_ids:
             return
         config = self.env['wics.api.auth'].search([])[0]
