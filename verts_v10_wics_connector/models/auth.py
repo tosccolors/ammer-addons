@@ -79,9 +79,10 @@ class StockIPicking(models.Model):
 
     trace_and_trace = fields.Char(string="Trace and Trace")
     trace_and_url = fields.Char(string="Trace and Trace Url")
-    wics_status = fields.Selection([('success', 'WICS accepted'), ('failure', 'WICS rejected'), ('shipped',
-                                                                                                 'WICS shipped')],
-                                   string='Status')
+    wics_status = fields.Selection([('success', 'WICS accepted'),
+                                    ('failure', 'WICS rejected'),
+                                    ('shipped', 'WICS shipped')],
+                                    string='Status')
     job_id = fields.Many2one('queue.job', string='Order Job', )
     issue = fields.Text(string='Issue')
 
