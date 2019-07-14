@@ -223,6 +223,7 @@ class StockIPicking(models.Model):
                 # then again send request for wics server shipments and get the success
                 resp_get = requests.get(url, auth=auth, headers=headers)
                 if resp_get.ok:
+                    resp = json.loads(resp_get.text)
                     # and if get data not none then get "traceandtrace" and "traceandtraceurl" and change odoo delivery order status on "shipped"
                     picking.state = 'shipped'
                     if resp['data'] != None:
