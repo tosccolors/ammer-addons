@@ -200,7 +200,7 @@ class StockIPicking(models.Model):
     # configurable in cron, default once every hour
     @api.multi
     def check_shipment(self):
-        picking_ids = self.search(['wics_status', '=', 'success'])
+        picking_ids = self.search([('wics_status', '=', 'success')])
         if not picking_ids:
             return
         config = self.env['wics.api.auth'].search([])[0]
