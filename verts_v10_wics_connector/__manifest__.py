@@ -21,20 +21,21 @@
 
 
 {
-    'name': 'Api Authentication',
+    'name': 'Wics Warehouse Order Interface',
     'category': '',
     'version': '1.0',
     'description': """
-APi Authentication Management.
-================================
+Wics API Warehouse order Interface.
+===================================
 
     """,
-    'author': 'VERTS Services India Private Limited',
+    'author': 'VERTS Services India Private Limited', 'Magnus'
     'website': 'https://www.verts.co.in',
     'depends': ['base','stock','queue_job'],
     'data': [
         'security/ir.model.access.csv',
         'views/auth_view.xml',
+        'data/cron.xml'
     ],
     'demo': [],
     'installable': True,

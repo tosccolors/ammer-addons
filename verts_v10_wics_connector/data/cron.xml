@@ -1,0 +1,14 @@
+<odoo>
+
+		<record model="ir.cron" id="picking_status_at_wics">
+            <field name="name">Status polling orders at Wics</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field eval="(DateTime.now() + timedelta(days= +1)).strftime('%Y-%m-%d 2:45:00')" name="nextcall"/>
+            <field eval="True" name="doall"/>
+            <field eval="'stock.picking'" name="model"/>
+            <field eval="'check_shipment'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>
+</odoo>

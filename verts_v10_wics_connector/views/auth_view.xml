@@ -1,23 +1,10 @@
 <odoo>
 	<data>
 
-		<!-- partner form view Inherit -->
-		<record id="base_partner_form_inherit" model="ir.ui.view">
-			<field name="name">res.partner.form</field>
-			<field name="model">res.partner</field>
-			<field name="inherit_id" ref="base.view_partner_form" />
-			<field name="arch" type="xml">
-				<field name="street2" position="after">
-					<field name="house_no" placeholder="huisnummer"/>
-					<field name="toegevoegd" placeholder="toegevoegd"/>
-				</field>
-			</field>
-		</record>
-
 		<!-- Auth Tree View -->
-		<record id="auth_tree_views" model="ir.ui.view">
-			<field name="name">api.auth.tree</field>
-			<field name="model">api.auth</field>
+		<record id="wics_api_auth_tree_view" model="ir.ui.view">
+			<field name="name">wics.api.auth.tree</field>
+			<field name="model">wics.api.auth</field>
 			<field name="arch" type="xml">
 				<tree string="Authentication">
 					<!--<field name="name"/>-->
@@ -27,18 +14,20 @@
 			</field>
 		</record>
 		<!-- Auth Form View -->
-		<record id="category_name_form_views" model="ir.ui.view">
-			<field name="name">api.auth.form</field>
-			<field name="model">api.auth</field>
+		<record id="wics_api_auth_form_views" model="ir.ui.view">
+			<field name="name">wics.api.auth.form</field>
+			<field name="model">wics.api.auth</field>
 			<field name="arch" type="xml">
 				<form string="Authentication">
 					<sheet>
 						<group>
 							<group>
-								<!--<field name="name" placeholder="Name"/>-->
+								<field name="endpoint" required="1" placeholder="http://test.servicelayer.wics
+								.nl/api/login"/>
 								<field name="auth_key" required="1" placeholder="Authentication Key"/>
 								<field name="secret_key" required="1" placeholder="Secret key"/>
-								<button name="action_request" string="Test" type="object" class="btn-primary"/>
+								<button name="wics_action_request" string="Test Connection" type="object"
+										class="btn-primary"/>
 							</group>
 						</group>
 					</sheet>
@@ -47,103 +36,54 @@
 		</record>
 
 		<!--Authentication Action -->
-		<record id="action_api_auth_id" model="ir.actions.act_window">
+		<record id="action_wics_api_auth_id" model="ir.actions.act_window">
 			<field name="name">Authentication</field>
 			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">api.auth</field>
+			<field name="res_model">wics.api.auth</field>
 			<field name="view_type">form</field>
-			<field name="view_id" ref="auth_tree_views" />
+			<field name="view_id" ref="wics_api_auth_tree_view" />
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem name="Api Authentication"
-			  id="menu_api_id"
+		<menuitem name="Wics Api Authentication"
+			  id="menu_wics_api_id"
               parent="base.menu_administration"
               groups="base.group_erp_manager,base.group_user"
         />
 
         <menuitem name="Authentication"
-              parent="menu_api_id"
-              id="menu_auth_api_id"
-              action="verts_v10_wics_connector.action_api_auth_id"
+              parent="menu_wics_api_id"
+              id="menu_wics_auth_api_id"
+              action="verts_v10_wics_connector.action_wics_api_auth_id"
               groups="base.group_erp_manager,base.group_user"
         />
 
-		<!-- Shipment Time Interval Tree View -->
-		<record id="ship_time_interval_tree_views" model="ir.ui.view">
-			<field name="name">ship.time.interval.tree</field>
-			<field name="model">ship.time.interval</field>
-			<field name="arch" type="xml">
-				<tree string="Shipment Time Interval">
-					<field name="name"/>
-				</tree>
-			</field>
-		</record>
-		<!-- Shipment Time Interval Form View -->
-		<record id="ship_time_interval_form_views" model="ir.ui.view">
-			<field name="name">ship.time.interval.form</field>
-			<field name="model">ship.time.interval</field>
-			<field name="arch" type="xml">
-				<form string="Shipment Time Interval">
-					<sheet>
-						<group>
-							<group>
-								<field name="name" required="1"/>
-							</group>
-						</group>
-					</sheet>
-				</form>
-			</field>
-		</record>
-
-		<!--Shipement Time Interval Action -->
-		<record id="action_ship_time_interval_id" model="ir.actions.act_window">
-			<field name="name">Shipment Check Interval</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">ship.time.interval</field>
-			<field name="view_type">form</field>
-			<field name="view_id" ref="ship_time_interval_tree_views" />
-			<field name="view_mode">tree,form</field>
-		</record>
-
-        <menuitem name="Shipment Check Interval"
-              parent="menu_api_id"
-              id="menu_ship_interval_id"
-              action="verts_v10_wics_connector.action_ship_time_interval_id"
-              groups="base.group_erp_manager,base.group_user"
-        />
 		<!-- Stock Picking Form view Inherit -->
 		<record id="stock_view_picking_form" model="ir.ui.view">
 			<field name="name">stock.picking.form</field>
 			<field name="model">stock.picking</field>
 			<field name="inherit_id" ref="stock.view_picking_form" />
 			<field name="arch" type="xml">
-				<xpath expr="//form/header/button[@name='do_new_transfer']" position="before">
-					<button name="create_order_job"
-							string="Create Order"
-							type="object"
-							attrs="{'invisible': [('order_status', '!=','failure')]}"
-							class="btn-primary"/>
-
-
-
+				<xpath expr="//form/header/button[@name='do_new_transfer']" position="attributes">
+					<attribute name="attrs">{'invisible':[ ('state', 'not in', ['draft','partially_available','assigned']),
+					('wics_status', 'not in', ['failure'])]}<attribute/>
 				</xpath>
 				<xpath expr="//page[3]" position="after">
-					<page string="delivery">
+					<page name="delivery" string="Delivery">
 						<group>
 							<group>
 								<field name="trace_and_trace"/>
 								<field name="trace_and_url"/>
-								<field name="order_status"/>
+								<field name="wics_status"/>
 								<field name="issue" attrs="{'invisible': [('order_status', '!=','failure')]}"/>
 								<field name="job_id"/>
-								<field name="shipment_job_id"/>
 							</group>
 						</group>
 					</page>
 				</xpath>
 			</field>
 		</record>
+
 		<!-- Stock Picking Tree view Inherit -->
 		<record id="stock_vpicktree" model="ir.ui.view">
 			<field name="name">stock.picking.form</field>
@@ -151,22 +91,9 @@
 			<field name="inherit_id" ref="stock.vpicktree" />
 			<field name="arch" type="xml">
 				<field name="origin" position="after">
-					<field name="order_status"/>
+					<field name="wics_status"/>
 				</field>
 			</field>
 		</record>
-
-		<!-- Queue Job Form view Inherit -->
- 		<!--<record id="queue_view_queue_job_form" model="ir.ui.view">-->
-			<!--<field name="name">queue.job.form</field>-->
-			<!--<field name="model">queue.job</field>-->
-			<!--<field name="inherit_id" ref="queue_job.view_queue_job_form" />-->
-			<!--<field name="arch" type="xml">-->
-				<!--<field name="channel" position="after">-->
-					<!--<field name="do_id"/>-->
-				<!--</field>-->
-			<!--</field>-->
-		<!--</record>-->
-		<!-- Queue Job Form view Inherit -->
 	</data>
 </odoo>
