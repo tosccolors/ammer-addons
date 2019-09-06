@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<template id="report_invoice_orderlines_document_account">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th width="10%">Date</th>
+                <!--<th width="10%">Advertising Issue</th>-->
+                <!--<th width="18%">Description</th>-->
+                <th width="10%">Reference</th>
+                <th width="10%" class="text-left">Product</th>
+                <th width="10%" class="text-right">Volume</th>
+                <t t-if="display_unit_price or display_discount"><th width="5%" class="text-right">Unit Price</th></t>
+                <th width="5%" t-if="display_discount" class="text-right">SBAD</th>
+                <th width="10%" t-if="display_discount" class="text-right">Agency Disc</th>
+                <th style="width:2%"/>
+                <th width="10%" class="text-right">Tax Excluded Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr t-foreach="o.invoice_line_ids" t-as="l">
+                <!--<t t-set="tot_Cdiscount" t-value="l.computed_discount"/>-->
+                <t t-set="sale_order_line" t-value="l.sale_line_ids"/>
+                <t >
+                   <td width="10%"> <span t-field="o.date_invoice"/></td>
+                </t>
+                <!--<t t-if="o.type != 'out_refund'">-->
+                    <!--<td width="10%" t-if="sale_order_line.date_type not in ['validity','issue_date']"><span t-field="o.date_invoice"/></td>-->
+                    <!--<t t-if="sale_order_line.date_type == 'validity'">-->
+                        <!--<td width="10%" t-if="not sale_order_line.from_date">-->
+                            <!--<t t-if="sale_order_line.dateperiods">-->
+                                <!--<span t-field="sale_order_line.dateperiods[0].from_date"/>-->
+                                <!--<span > - </span>-->
+                                <!--<span t-field="sale_order_line.dateperiods[0].to_date"/>-->
+                            <!--</t>-->
+                        <!--</td>-->
+                        <!--<td width="10%" t-if="sale_order_line.from_date">-->
+                            <!--<span t-field="sale_order_line.from_date"/>-->
+                            <!--<span > - </span>-->
+                            <!--<span t-field="sale_order_line.to_date"/>-->
+                        <!--</td>-->
+                    <!--</t>-->
+                    <!--<td width="10%" t-if="sale_order_line.date_type == 'issue_date'"><span t-field="sale_order_line.issue_date"/></td>-->
+                    <!--<td width="10%"><span t-field="sale_order_line.adv_issue.default_note"/></td>-->
+                <!--</t>-->
+                <!--<t t-if="o.type == 'out_refund'">-->
+                    <!--<td width="10%" t-if="sale_order_line.date_type not in ['validity','issue_date']"><span t-field="o.refund_invoice_id.date_invoice"/></td>-->
+                    <!--<t t-if="sale_order_line.date_type == 'validity'">-->
+                        <!--<td width="10%" t-if="not sale_order_line.from_date">-->
+                            <!--<t t-if="sale_order_line.dateperiods">-->
+                                <!--<span t-esc="sale_order_line.dateperiods[0].from_date" t-options='{"widget": "date"}'/>-->
+                                <!--<span > - </span>-->
+                                <!--<span t-esc="sale_order_line.dateperiods[0].to_date" t-options='{"widget": "date"}'/>-->
+                            <!--</t>-->
+                        <!--</td>-->
+                        <!--<td width="10%" t-if="sale_order_line.from_date">-->
+                            <!--<span t-esc="sale_order_line.from_date"/>-->
+                            <!--<span > - </span>-->
+                            <!--<span t-esc="sale_order_line.to_date" t-options='{"widget": "date"}'/>-->
+                        <!--</td>-->
+                    <!--</t>-->
+                    <!--<t t-if="sale_order_line.date_type == 'issue_date'">-->
+                        <!--<td width="10%"><span t-esc="sale_order_line.issue_date" t-options='{"widget": "date"}'/></td>-->
+                    <!--</t>-->
+                    <!--<td width="10%"><span t-field="sale_order_line.adv_issue.default_note"/></td>-->
+                <!--</t>-->
+                <!--<t t-if="o.type != 'out_refund'">
+                    <td width="18%"><span t-field="l.opportunity_subject"/></td>
+                </t>
+                <t t-if="o.type == 'out_refund'">
+                    <td width="18%"><span t-esc="l.opportunity_subject"/></td>
+                </t>-->
+                <!--<t t-if="o.type != 'out_refund'">
+                    <td width="10%"><span t-field="l.ad_number"/></td>
+                </t>
+                <t t-if="o.type == 'out_refund'">
+                    <td width="10%"><span t-esc="l.ad_number"/></td>
+                </t>-->
+                <t>
+                    <td width="10%"><span t-field="l.name"/></td>
+                </t>
+                <td width="10%" class="text-left"><span t-if="l.product_id" t-field="l.product_id.name"/></td>
+                <td width="10%" class="text-right">
+                    <span t-field="l.quantity"/>
+                    <span t-field="l.uom_id"  groups="product.group_uom"/>
+                </td>
+                <t t-if="display_unit_price or display_discount">
+                    <td width="5%" class="text-right">
+                        <span t-field="l.price_unit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </td>
+                </t>
+               <!-- <td width="5%" t-if="display_discount" class="text-right">
+                    <t t-if="o.type != 'out_refund'">
+                        <span t-field="l.subtotal_before_agency_disc"/>
+                    </t>
+                    <t t-if="o.type == 'out_refund'">
+                        <span t-esc="l.subtotal_before_agency_disc" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </t>
+                </td>-->
+                <td width="10%" t-if="display_discount" class="text-right">
+                    <!--<t t-if="o.type != 'out_refund'">-->
+                        <!--<t t-set="discount_amount" t-value="l.subtotal_before_agency_disc - l.price_subtotal"/>-->
+                    <!--</t>-->
+                    <!--<t t-if="o.type == 'out_refund'">-->
+                        <!--<t t-set="discount_amount" t-value="l.subtotal_before_agency_disc - l.price_subtotal"/>-->
+                    <!--</t>-->
+                    <t t-esc="discount_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    (<t t-if="o.type != 'out_refund'"><span t-field="l.discount"/></t><t t-if="o.type == 'out_refund'"><span t-esc="l.discount"/></t>%)
+                </td>
+                <td width="2%" class="text-right">
+                    <t t-if="o.currency_id"><span t-field="o.currency_id.symbol"/></t>
+                </td>
+                <td width="10%" class="text-right">
+                    <span t-if="o.type == 'out_refund'">-</span><span t-esc="'%.2f'% l.price_subtotal" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</template>
+
+<template id="report_invoice_document_account">
+    <t t-call="report.external_layout">
+
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+        <div class="page" style="font-family: 'Titillium Web', sans-serif;page-break-after:always;">
+            <div class="row mt32 mb32" style="padding-left:85px;">
+                 <div class="col-xs-7" style="padding:0px;">
+                    <strong>
+                        <t t-if="o.partner_id.is_company">
+                            <!--<div t-if="o.partner_id and o.partner_id.property_account_payable_id" t-field="o.partner_id.property_account_payable_id.name"/>-->
+                            <br/>
+                            <br/>
+                            <div t-field="o.partner_id.name"/>
+                            <div>T.a.v.: Crediteurenadministratie</div>
+                        </t>
+                        <t t-if="not o.partner_id.is_company">
+                            <div t-if="o.partner_id and o.partner_id.parent_id">
+                                T.a.v.:<span t-field="o.partner_id.parent_id.name"/>
+                            </div>
+                        </t>
+                        <t t-if="o.partner_id">
+                            <div t-field="o.partner_id.street"/>
+                            <div t-field="o.partner_id.street2"/>
+                            <span t-field="o.partner_id.zip"/> <span t-field="o.partner_id.city"/>
+                            <div t-if="o.partner_id.country_id" t-field="o.partner_id.country_id.name"/>
+                        </t>
+                    </strong>
+                 </div>
+            </div>
+            <br/>
+            <!--<t t-if="o.published_customer and o.published_customer.id != o.partner_id.id">
+                <div style="padding-left:70px;padding-right:0px;">
+                    <span width="35%">
+                        <strong>Advertiser</strong>
+                    </span>
+                    <span width="1%">
+                        <strong>:</strong>
+                    </span>
+                    <span width="64%">
+                        <span t-field="o.published_customer.name"/>
+                    </span>
+                </div>
+                <br/>
+                <br/>
+            </t>-->
+            <div class="row" style="padding-left:85px;">
+                <div name="invoice_title" class="col-xs-7" style="padding:0px;">
+                    <h3>
+                        <span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">INVOICE</span>
+                        <span t-if="o.type == 'out_invoice' and o.state == 'proforma2'">PRO-FORMA</span>
+                        <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft INVOICE</span>
+                        <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled INVOICE</span>
+                        <span t-if="o.type == 'out_refund'">CREDIT INVOICE</span>
+                        <span t-if="o.type == 'in_refund'">Vendor Refund</span>
+                        <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
+                    </h3>
+                </div>
+            </div>
+            <!--<t t-set="bank_acc" t-value="any([b.acc_number for b in o.company_id.partner_id.bank_ids])"/>-->
+            <div style="padding-left:85px;padding-right:15px;">
+                <div class="row" style="padding:0px;padding-right:15px;border-top:1px solid black;border-bottom:1px solid black;">
+                    <div class="col-xs-6" style="padding:0px;">
+                         <div class="col-xs-4" style="padding:0px;">
+                             <span>Invoice Number</span>
+                             <br/>
+<!--                             <span>Our Reference</span>
+                             <br/>-->
+                             <span>Your Reference</span>
+                             <br/>
+                             <span>Customer ID</span>
+                         </div>
+                         <div class="col-xs-1" style="padding:0px;">
+                             <span><strong> </strong></span>
+                             <br/>
+                             <span><strong> </strong></span>
+                             <br/>
+                             <span><strong> </strong></span>
+                             <br/>
+                             <span><strong> </strong></span>
+                         </div>
+                         <div class="col-xs-7" style="padding:0px;">
+                             <span t-field="o.number"/>
+                             <br/>
+<!--                             <span t-field="o.origin"/>
+                             <br/>-->
+                             <span t-field="o.name"/>
+                             <br/>
+                             <span t-field="o.partner_id.ref"/>
+                         </div>
+                    </div>
+                    <div class="col-xs-6" style="padding:0px;">
+                        <div class="col-xs-3" style="padding:0px;">
+                             <span>Invoice Date</span>
+                             <br/>
+                             <span>Expiry Date</span>
+                             <t t-if="o.fiscal_position_id.id != 1">
+                                <br/>
+                                <span>VAT No.</span>
+                             </t>
+                             <!--<br/>-->
+                             <!--<span t-if="bank_acc">IBAN</span>-->
+                        </div>
+                        <div class="col-xs-1" style="padding:0px;">
+                             <span><strong> </strong></span>
+                             <br/>
+                             <span><strong> </strong></span>
+                             <t t-if="o.fiscal_position_id.id != 1">
+                                <br/>
+                                <span><strong> </strong></span>
+                             </t>
+                             <!--<br/>-->
+                             <!--<span t-if="bank_acc"><strong> </strong></span>-->
+                        </div>
+                        <div class="col-xs-8" style="padding:0px;">
+                             <span t-field="o.date_invoice"/>
+                             <br/>
+                             <span t-field="o.date_due"/>
+                             <t t-if="o.fiscal_position_id.id != 1">
+                                <br/>
+                                <span t-if="o.partner_id" t-field="o.partner_id.vat"/>
+                             </t>
+                             <!--<br/>
+                             <span t-if="bank_acc" t-esc="', '.join(map(lambda b: (b.acc_number or ''), o.company_id.partner_id.bank_ids))"/>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <div style="padding-left:85px;padding-right:15px;" t-if="o.invoice_description">
+                <strong><span t-field="o.invoice_description"/></strong>
+            </div>
+
+            <!--<t t-set="total_before_discount" t-value="sum([l.subtotal_before_agency_disc for l in o.invoice_line_ids])"/>-->
+            <!--<t t-set="total_discount" t-value="sum([l.subtotal_before_agency_disc - l.price_subtotal for l in o.invoice_line_ids])"/>-->
+            <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
+            <t t-set="display_unit_price" t-value="any([l.quantity>1 for l in o.invoice_line_ids])"/>
+            <div name="invoice_orderlines" style="padding-left:70px;padding-right:0px;" t-if="not o.invoice_description">
+                <t t-call="ammer_invoice_layout.report_invoice_orderlines_document_account"/>
+            </div>
+
+            <div class="row" style="padding-left:85px;padding-right:0px;page-break-inside:avoid;">
+                <div class="col-xs-6 pull-right">
+                <table class="table table-condensed">
+                    <!--<tr t-if="display_discount" class="border-black">
+                        <td>Subtotal before agency discount</td>
+                        <td class="text-right">
+                            <t t-if="o.currency_id"><span t-field="o.currency_id.symbol"/></t><span t-esc="'%.2f'% total_before_discount"/>
+                        </td>
+                    </tr>-->
+                    <!--<tr t-if="display_discount">
+                        <td>Sum of agency discount</td>
+                        <td class="text-right">
+                            -<t t-if="o.currency_id"><span t-field="o.currency_id.symbol"/></t><span t-esc="'%.2f'% total_discount"/>
+                        </td>
+                    </tr>-->
+                    <tr class="border-black">
+                        <td><strong>Subtotal</strong></td>
+                        <td class="text-right">
+                            <t t-if="o.currency_id"><span t-field="o.currency_id.symbol"/></t><span t-esc="'%.2f'% o.amount_untaxed"/>
+                        </td>
+                    </tr>
+                    <tr t-foreach="o.tax_line_ids" t-as="t">
+                        <td><span t-field="t.tax_id.description"/></td>
+                        <td class="text-right">
+                            <t t-if="o.currency_id"><span t-field="o.currency_id.symbol"/></t><span t-esc="'%.2f'% t.amount"/>
+                        </td>
+                    </tr>
+                    <tr class="border-black">
+                        <td><strong>Total</strong></td>
+                        <td class="text-right">
+                             <t t-if="o.currency_id"><span t-field="o.currency_id.symbol"/></t><span t-if="o.type == 'out_refund'">-</span><span t-esc="'%.2f'% o.amount_total"/>
+                        </td>
+                    </tr>
+                </table>
+                </div>
+            </div>
+        </div>
+    </t>
+</template>
+
+
+
+<template id="report_invoice_account">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="ammer_invoice_layout.report_invoice_document_account" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+
+</data>
+</odoo>

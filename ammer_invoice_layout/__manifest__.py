@@ -36,12 +36,14 @@
     'images': [
     ],
     'data': [
-    ],
-    "init_xml": [
-    ],
-    "update_xml": [
+        "report/report.xml",
+        "report/report_invoice.xml",
+        "report/report_saleorder.xml",
         "view/account_invoice_report.xml",
         "view/account_invoice_view.xml",
+        "view/res_company_view.xml",
+    ],
+    "init_xml": [
     ],
     'demo_xml': [
     ],

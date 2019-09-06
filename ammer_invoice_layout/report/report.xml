@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <template id="operating_unit_report_layout.report_assets_common" name="operating_unit_report_layout report assets common" inherit_id="report.assets_common">
+        <template id="ammer_invoice_layout.report_assets_common" name="ammer_invoice_layout report assets common" inherit_id="report.assets_common">
             <xpath expr="." position="inside">
                 <link href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;subset=latin-ext" rel="stylesheet"/>
             </xpath>
@@ -23,6 +23,35 @@
             <field name="header_spacing">45</field>
             <field name="dpi">90</field>
         </record>
+
+        <template id="report.external_layout_header">
+            <div class="header">
+                <div class="row">
+                    <div class="row backgroundimage" style="position:relative;font-size:3em;
+                                width:100%;height:100%;z-index:1000;padding-left:5px;">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.report_background_image1"
+                                style="width:100%; display: block;"/>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="report.external_layout">
+            <!-- Multicompany -->
+            <t t-if="not o and doc">
+                <t t-set="o" t-value="doc"/>
+            </t>
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+
+            <t t-call="report.external_layout_header" />
+            <t t-raw="0" />
+            <!--<t t-call="report.external_layout_footer" />-->
+        </template>
 
     </data>
 </odoo>
