@@ -1,0 +1,33 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color:#875A7B;">API Authentication with Odoo Queue job</h2>
+        <h3 class="oe_slogan">Add Some Congiguration in configuration file </h3>
+        <h4 class="oe_slogan">1) Add this in Config file : <br />
+                    [options]<br />
+                    ; This is the password that allows database operations:<br />
+                    admin_passwd = admin<br />
+                    db_host = localhost<br />
+                    db_port = 5432<br />
+                    db_user = user<br />
+                    db_password = password<br />
+                    addons_path = /home/nihal/workspace/odoo-10.0/addons <br />
+                    xmlrpc_port = 1070<br />
+                    workers = 4<br />
+                    server_wide_modules = web,queue_job<br />
+                    [queue_job] <br />
+                    channels = root:1 <br />
+                    root.connector_jira.import:</h4>
+        <h4 class="oe_slogan"> Run these 4 commands from ur terminal --<br />
+            (1) export PATH=ODOO_QUEUE_JOB_HTTP_AUTH_USER=admin<br />
+            (2) export PATH=ODOO_QUEUE_JOB_HTTP_AUTH_PASSWORD=adminpassword<br />
+            (3) export PATH=ODOO_QUEUE_JOB_JOBRUNNER_DB_HOST=localhost<br />
+            (4) export PATH=ODOO_QUEUE_JOB_JOBRUNNER_DB_PORT=5432<br />
+            Note : - adminpassword is whatever admin password you have to set on your db<br />
+            and then run server<br />
+            and use always dbfilter on cammand like python ./odoo-bin -c o10.conf --db-filter=db_name </h4>
+
+    </div>
+</section>
+
+
+

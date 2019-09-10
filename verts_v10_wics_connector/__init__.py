@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright 2016 BAS Solutions
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,40 +19,8 @@
 #
 ##############################################################################
 
-{
-    "name": "Amsterdam Merchandising Invoice Layout",
-    "version": "1.0",
-    "author": "Magnus",
-    "website": "https://www.magnus.nl",
-    "category": "Account",
-    "depends": [
-        "base",
-        "account",
-    ],
-    "summary": "Amsterdam Merchandising Account Invoice Layout",
-    "description": """
-        Amsterdam Merchandising Account Invoice Layout
-        Please use a .png file with a transparent background as your image.
-    """,
-    'images': [
-    ],
-    'data': [
-        "report/report.xml",
-        "report/report_invoice.xml",
-        "report/report_saleorder.xml",
-        "view/account_invoice_report.xml",
-        "view/account_invoice_view.xml",
-        "view/res_company_view.xml",
-    ],
-    "init_xml": [
-    ],
-    'demo_xml': [
-    ],
-    'test': [
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': False,
-}
+from . import models
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

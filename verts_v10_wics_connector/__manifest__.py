@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright 2016 BAS Solutions
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,40 +19,27 @@
 #
 ##############################################################################
 
+
 {
-    "name": "Amsterdam Merchandising Invoice Layout",
-    "version": "1.0",
-    "author": "Magnus",
-    "website": "https://www.magnus.nl",
-    "category": "Account",
-    "depends": [
-        "base",
-        "account",
-    ],
-    "summary": "Amsterdam Merchandising Account Invoice Layout",
-    "description": """
-        Amsterdam Merchandising Account Invoice Layout
-        Please use a .png file with a transparent background as your image.
+    'name': 'Wics Warehouse Order Interface',
+    'category': '',
+    'version': '1.0',
+    'description': """
+Wics API Warehouse order Interface.
+===================================
+
     """,
-    'images': [
-    ],
+    'author': 'VERTS Services India Private Limited', 'Magnus'
+    'website': 'https://www.verts.co.in',
+    'depends': ['base','stock','queue_job'],
     'data': [
-        "report/report.xml",
-        "report/report_invoice.xml",
-        "report/report_saleorder.xml",
-        "view/account_invoice_report.xml",
-        "view/account_invoice_view.xml",
-        "view/res_company_view.xml",
+        'security/ir.model.access.csv',
+        'views/auth_view.xml',
+        'data/cron.xml'
     ],
-    "init_xml": [
-    ],
-    'demo_xml': [
-    ],
-    'test': [
-    ],
+    'demo': [],
     'installable': True,
     'auto_install': False,
-    'application': False,
 }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -1,0 +1,100 @@
+<odoo>
+	<data>
+
+		<!-- Auth Tree View -->
+		<record id="wics_api_auth_tree_view" model="ir.ui.view">
+			<field name="name">wics.api.auth.tree</field>
+			<field name="model">wics.api.auth</field>
+			<field name="arch" type="xml">
+				<tree string="Authentication">
+					<!--<field name="name"/>-->
+					<field name="auth_key"/>
+					<field name="secret_key"/>
+				</tree>
+			</field>
+		</record>
+		<!-- Auth Form View -->
+		<record id="wics_api_auth_form_views" model="ir.ui.view">
+			<field name="name">wics.api.auth.form</field>
+			<field name="model">wics.api.auth</field>
+			<field name="arch" type="xml">
+				<form string="Authentication">
+					<sheet>
+						<group>
+							<group>
+								<field name="endpoint" required="1" placeholder="http://test.servicelayer.wics
+								.nl/api/login"/>
+								<field name="auth_key" required="1" placeholder="Authentication Key"/>
+								<field name="secret_key" required="1" placeholder="Secret key"/>
+								<button name="wics_action_request" string="Test Connection" type="object"
+										class="btn-primary"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!--Authentication Action -->
+		<record id="action_wics_api_auth_id" model="ir.actions.act_window">
+			<field name="name">Authentication</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">wics.api.auth</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="wics_api_auth_tree_view" />
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="Wics Api Authentication"
+			  id="menu_wics_api_id"
+              parent="base.menu_administration"
+              groups="base.group_erp_manager,base.group_user"
+        />
+
+        <menuitem name="Authentication"
+              parent="menu_wics_api_id"
+              id="menu_wics_auth_api_id"
+              action="verts_v10_wics_connector.action_wics_api_auth_id"
+              groups="base.group_erp_manager,base.group_user"
+        />
+
+		<!-- Stock Picking Form view Inherit -->
+		<record id="stock_view_picking_form" model="ir.ui.view">
+			<field name="name">stock.picking.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//form/header/button[@name='do_new_transfer']" position="attributes">
+					<attribute name="attrs" >{'invisible':[('state', 'not in',
+					['draft','partially_available','assigned']),
+					('wics_status', 'not in', ['failure'])]}</attribute>
+				</xpath>
+				<xpath expr="//page[3]" position="after">
+					<page name="delivery" string="Delivery">
+						<group>
+							<group>
+								<field name="trace_and_trace"/>
+								<field name="trace_and_url"/>
+								<field name="wics_status"/>
+								<field name="issue" attrs="{'invisible': [('wics_status', '!=','failure')]}"/>
+								<field name="job_id"/>
+							</group>
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+
+		<!-- Stock Picking Tree view Inherit -->
+		<record id="stock_vpicktree" model="ir.ui.view">
+			<field name="name">stock.picking.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.vpicktree" />
+			<field name="arch" type="xml">
+				<field name="origin" position="after">
+					<field name="wics_status"/>
+				</field>
+			</field>
+		</record>
+	</data>
+</odoo>
