@@ -86,7 +86,7 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr>
-                                <th width="10%">Date</th>
+                                <th width="10%">Product Ref#</th>
                                 <!--<t t-if="not doc.operating_unit_id.use_bduprint"><th width="15%">Advertising Issue</th></t>-->
                                 <!--<t t-if="not doc.operating_unit_id.use_bduprint"><th width="15%">Reference</th></t>-->
                                 <th width="10%">Product</th>
@@ -125,7 +125,7 @@
                                         <!--<t t-if="not doc.operating_unit_id.use_bduprint"><td><span t-if="l.title" t-field="l.title.name"/></td></t>-->
                                         <!--<t t-if="not doc.operating_unit_id.use_bduprint"><td><span t-if="l.adv_issue" t-field="l.adv_issue.default_note"/></td></t>-->
                                         <!--<t t-if="not doc.operating_unit_id.use_bduprint"><td><span t-field="l.ad_number"/></td></t>-->
-                                        <td><span t-field="doc.date_order"/></td>
+                                        <td><span t-field="l.product_id.default_code"/></td>
                                         <td t-if="l.product_id" ><span t-field="l.product_id.name"/></td>
                                         <!--td t-if="l.medium.name == 'Newspapers/Specials'"><span t-field="l.product_template_id.width"/></td-->
                                         <!--td t-if="l.medium.name == 'Newspapers/Specials'"><span t-field="l.product_template_id.height"/></td-->
