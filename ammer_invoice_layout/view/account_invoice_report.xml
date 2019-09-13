@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <report auto="False"
+            id="account.account_invoices"
+            model="account.invoice"
+            name="ammer_invoice_layout.report_invoice_account"
+            file="ammer_invoice_layout.report_invoice_account"
+            string="Invoices"
+            report_type="qweb-pdf"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+            attachment_use="True"
+            usage="default"
+            header="False"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_res_company_form_inherits" model="ir.ui.view">
+        <field name="name">res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="priority" eval="90" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page name="background" string="Background Image Configuration">
+                    <group string="Background Image for Invoice">
+                        <field name="report_background_image1" widget="image" class="oe_avatar oe_left"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

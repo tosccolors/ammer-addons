@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="report_saleorder_document1">
+    <t t-call="report.external_layout">
+        <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
+        <div class="page" style="font-family: 'Titillium Web', sans-serif;">
+            <div class="oe_structure"/>
+            <div class="row" style="padding-left:75px;">
+                <div name="order_title" class="col-xs-5 col-xs-offset-7" style="padding:0px;">
+                    <h3>
+                        <span t-if="doc.state in ['sale','done']">ORDER CONFIRMATION</span>
+                        <span t-if="doc.state not in ['sale','done']">QUOTATION</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row mt32 mb32" style="padding-left:85px;">
+                 <div class="col-xs-7" style="padding:0px;">
+                     <div class="col-xs-4" style="padding:0px;">
+                         <span t-if="doc.state in ['sale','done']"><strong>Order Date</strong></span>
+                         <span t-if="doc.state not in ['sale','done']"><strong>Quotation Date</strong></span>
+                         <br/>
+                         <span t-if="doc.state in ['sale','done']"><strong>Order Number</strong></span>
+                         <span t-if="doc.state not in ['sale','done']"><strong>Quotation Number</strong></span>
+                         <br/>
+                         <span><strong>Customer Code</strong></span>
+                     </div>
+                     <div class="col-xs-1" style="padding:0px;">
+                         <span><strong>:</strong></span>
+                         <br/>
+                         <span><strong>:</strong></span>
+                         <br/>
+                         <span><strong>:</strong></span>
+                     </div>
+                     <div class="col-xs-7" style="padding:0px;">
+                         <span t-field="doc.date_order"/>
+                         <br/>
+                         <span t-field="doc.name"/>
+                         <br/>
+                         <span t-field="doc.partner_id.ref"/>
+                     </div>
+                 </div>
+
+                 <div name="invoice_address" class="col-xs-5" style="padding:0px;">
+                    <div t-field="doc.partner_invoice_id"
+                        t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True, "phone_icons": True}'/>
+                    <p t-if="doc.partner_id.vat">VAT: <span t-field="doc.partner_id.vat"/></p>
+                 </div>
+
+                <br/><br/>
+                 <!--<t t-if="not doc.operating_unit_id.use_bduprint">
+                     <div class="col-xs-7" style="padding:0px;">
+                         <div class="col-xs-4" style="padding:0px;">
+                             <strong>Advertiser</strong>
+                         </div>
+                         <div class="col-xs-1" style="padding:0px;">
+                             <span><strong>:</strong></span>
+                         </div>
+                         <div class="col-xs-7" style="padding:0px;">
+                             <span t-field="doc.published_customer.name"/>
+                         </div>
+                     </div>
+                     <div class="col-xs-7" style="padding:0px;">
+                         <div class="col-xs-4" style="padding:0px;">
+                             <strong>Opportunity Subject</strong>
+                         </div>
+                         <div class="col-xs-1" style="padding:0px;">
+                             <span><strong>:</strong></span>
+                         </div>
+                         <div class="col-xs-7" style="padding:0px;">
+                             <span t-field="doc.opportunity_subject"/>
+                         </div>
+                     </div>
+                 </t>-->
+
+            </div>
+
+            <!-- Is there a discount on at least one line? -->
+            <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
+            <!--<t t-set="display_Cdiscount" t-value="any([l.computed_discount for l in doc.order_line])"/>-->
+            <t t-set="tot_Cdiscount" t-value="0"/>
+
+            <div class="row" style="padding-left:85px;padding-right:15px;">
+                <t t-foreach="doc.order_lines_layouted()" t-as="page">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th width="10%">Product Ref#</th>
+                                <!--<t t-if="not doc.operating_unit_id.use_bduprint"><th width="15%">Advertising Issue</th></t>-->
+                                <!--<t t-if="not doc.operating_unit_id.use_bduprint"><th width="15%">Reference</th></t>-->
+                                <th width="10%">Product</th>
+                                <th width="10%" class="text-right">Volume</th>
+                                <!--<th width="10%" t-if="doc.operating_unit_id.use_bduprint" class="text-right">Unit Price</th>-->
+                                <!--<th width="10%" t-if="doc.partner_id.is_ad_agency and not doc.operating_unit_id.use_bduprint " class="text-right">Subtotal Before Commission</th>-->
+                                <th width="10%" t-if="display_discount" class="text-right">Disc(%)</th>
+                                <!--<th width="10%" t-if="doc.operating_unit_id.use_bduprint and display_Cdiscount" class="text-right">Computed Discount</th>-->
+                                <!--<th width="10%" t-if="not doc.operating_unit_id.use_bduprint and doc.display_discount_to_customer" class="text-right">Computed Discount</th>-->
+                                <th width="10%" class="text-right">Tax Excluded Price</th>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="page" t-as="layout_category">
+
+                                <t t-if="layout_category_size > 1 or page_size > 1" groups="sale.group_sale_layout">
+                                    <tr class="active">
+                                        <td colspan="7" style="font-weight: bold; border-bottom: 1px solid black;">&amp;bull;
+                                            <t t-esc="layout_category['name']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Lines associated -->
+                                <t t-foreach="layout_category['lines']" t-as="l">
+                                    <!--<t t-set="tot_Cdiscount" t-value="tot_Cdiscount + l.computed_discount"/>-->
+
+                                    <tr>
+                                        <!--<td t-if="l.medium in (l.env.ref('sale_advertising_order.online_advertising_category'),-->
+                                                               <!--l.env.ref('sale_advertising_order.magazine_online_advertising_category'))">-->
+                                            <!--<span t-field="l.from_date"/><span> - </span><span t-field="l.to_date"/>-->
+                                        <!--</td>-->
+                                        <!--<td t-if="not l.medium in (l.env.ref('sale_advertising_order.online_advertising_category'),-->
+                                                               <!--l.env.ref('sale_advertising_order.magazine_online_advertising_category'))">-->
+                                            <!--<span t-field="l.issue_date"/></td>-->
+                                        <!--<t t-if="not doc.operating_unit_id.use_bduprint"><td><span t-if="l.title" t-field="l.title.name"/></td></t>-->
+                                        <!--<t t-if="not doc.operating_unit_id.use_bduprint"><td><span t-if="l.adv_issue" t-field="l.adv_issue.default_note"/></td></t>-->
+                                        <!--<t t-if="not doc.operating_unit_id.use_bduprint"><td><span t-field="l.ad_number"/></td></t>-->
+                                        <td><span t-field="l.product_id.default_code"/></td>
+                                        <td t-if="l.product_id" ><span t-field="l.product_id.name"/></td>
+                                        <!--td t-if="l.medium.name == 'Newspapers/Specials'"><span t-field="l.product_template_id.width"/></td-->
+                                        <!--td t-if="l.medium.name == 'Newspapers/Specials'"><span t-field="l.product_template_id.height"/></td-->
+                                        <td class="text-right">
+                                            <span t-field="l.product_uom_qty"/>
+                                            <span t-field="l.product_uom" groups="product.group_uom"/>
+                                        </td>
+                                        <!--<td t-if="doc.operating_unit_id.use_bduprint" class="text-right">
+                                            <span t-field="l.price_unit"/>
+                                        </td>-->
+                                        <!--<td t-if="doc.partner_id.is_ad_agency and not doc.operating_unit_id.use_bduprint" class="text-right">-->
+                                            <!--<span t-field="l.subtotal_before_agency_disc"/>-->
+                                        <!--</td>-->
+                                        <td t-if="display_discount" class="text-right">
+                                            <span t-field="l.discount"/>
+                                        </td>
+                                        <!--<td t-if="doc.operating_unit_id.use_bduprint and display_Cdiscount" class="text-right">
+                                            <span t-field="l.computed_discount"/>
+                                        </td>-->
+                                        <!--<td t-if="not doc.operating_unit_id.use_bduprint and doc.display_discount_to_customer" class="text-right">
+                                            <span t-field="l.computed_discount"/>
+                                        </td>-->
+                                        <td class="text-right" >
+                                            <span t-field="l.price_subtotal"
+                                                t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <!--<t t-if="doc.operating_unit_id.use_bduprint">
+                                        <tr t-if="l.name">
+                                            <td></td>
+                                            <td style="font-weight:bold;font-size:11px;font-style:italic;">Description/ short content :</td>
+                                        </tr>
+                                        <tr t-if="l.name">
+                                            <td></td>
+                                            <td colspan="3" style="font-size:11px;font-style:italic;text-align:justify;"><span t-field="l.name"/></td>
+                                        </tr>
+                                    </t>-->
+                                </t>
+
+                                <t t-if="(layout_category_size > 1 or page_size > 1) and layout_category['subtotal']" groups="sale.group_sale_layout">
+                                    <tr class="text-right">
+                                        <td colspan="6">
+                                            <strong>Subtotal: </strong>
+                                            <t t-set="subtotal" t-value="sum(line.price_subtotal for line in layout_category['lines'])"/>
+                                            <span t-esc="subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <t t-if="page_index &lt; page_size - 1" groups="sale.group_sale_layout">
+                        <p style="page-break-before:always;"> </p>
+                    </t>
+                </t>
+            </div>
+
+            <div class="row" name="total">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Gross</strong></td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_untaxed"
+                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            </td>
+                        </tr>
+                        <!--<t t-if="doc.operating_unit_id.use_bduprint">
+                            <tr>
+                                <td>Discount</td>
+                                <td class="text-right">
+                                    <span t-raw="tot_Cdiscount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                        </t>-->
+                        <tr>
+                            <td><strong>Taxes</strong></td>
+                            <td class="text-right">
+                                <span t-esc="doc.amount_tax"
+                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            </td>
+                        </tr>
+
+                        <tr class="border-black">
+                            <td><strong>Total</strong></td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_total"
+                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!--<strong t-if="not doc.operating_unit_id.use_bduprint">
+                <p t-field="doc.note" class='text-center' style="padding-left:75px;padding-right:70px;padding-top:30px;"/>
+            </strong>-->
+
+            <!--p t-if="doc.state not in ['draft','sale'] and doc.payment_term_id.note" class='text-center' style="padding-left:70px;padding-right:70px;padding-top:30px;">
+                <span t-field="doc.payment_term_id.note"/>
+            </p-->
+
+            <!--<strong t-if="doc.operating_unit_id.use_bduprint">
+                <p t-field="doc.note" class='text-center' style="font-size:8pt;padding-left:75px;padding-right:70px;padding-top:30px;"/>
+            </strong>-->
+
+            <p/>
+            <p/>
+            <!--<p style="padding-left:75px;padding-right:15px;">-->
+                <!--We would like to thank you for your request and see your response as soon as possible.-->
+            <!--</p>-->
+            <p t-if="doc.state not in ['sale','done']" style="padding-left:75px;padding-right:15px;">
+                We would like to thank you for your request. We are looking forward to receiving your response as soon as possible.
+            </p>
+            <p t-if="doc.state in ['sale','done']" style="padding-left:75px;padding-right:15px;">
+                We would like to thank you and take good care of your order placement.
+            </p>
+            <br/>
+            <div class="row" style="padding-left:75px;page-break-inside:avoid;">
+                <!--<div class="col-xs-5">
+                    <strong><p>Sincerely,</p></strong>
+                    <span t-field="doc.operating_unit_id.name"/>
+                    <br/>
+                    <span t-field="doc.user_id.name"/>
+                </div>-->
+                <div t-if="doc.state in ['draft','sent']" class="col-xs-4 pull-right">
+                    <p><strong>For approval:</strong></p>
+                    <span/>
+                    <br/>
+                    <span>..............................</span>
+                    <br/>
+                    <span t-field="doc.partner_id.name"/>
+                </div>
+                <br/>
+            </div>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+
+<template id="sale.report_saleorder">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="ammer_invoice_layout.report_saleorder_document1" t-lang="doc.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+</odoo>
