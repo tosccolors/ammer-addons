@@ -136,12 +136,12 @@
                                         <!--<td t-if="doc.operating_unit_id.use_bduprint" class="text-right">
                                             <span t-field="l.price_unit"/>
                                         </td>-->
-                                       <!-- <td t-if="doc.partner_id.is_ad_agency and not doc.operating_unit_id.use_bduprint" class="text-right">
-                                            <span t-field="l.subtotal_before_agency_disc"/>
-                                        </td>
+                                        <!--<td t-if="doc.partner_id.is_ad_agency and not doc.operating_unit_id.use_bduprint" class="text-right">-->
+                                            <!--<span t-field="l.subtotal_before_agency_disc"/>-->
+                                        <!--</td>-->
                                         <td t-if="display_discount" class="text-right">
                                             <span t-field="l.discount"/>
-                                        </td>-->
+                                        </td>
                                         <!--<td t-if="doc.operating_unit_id.use_bduprint and display_Cdiscount" class="text-right">
                                             <span t-field="l.computed_discount"/>
                                         </td>-->
