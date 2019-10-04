@@ -4,7 +4,8 @@ import requests
 import json
 from odoo.exceptions import ValidationError, UserError
 from odoo.addons.queue_job.job import job
-
+import logging
+_logger = logging.getLogger(__name__)
 
 # Here is the class or new object for make connection between Odoo and WICS Server
 # we have to used two values field in object.first one is auth_key to put the authentication key on your api and
@@ -16,9 +17,6 @@ class ResPartner(models.Model):
 
     house_no = fields.Integer('huisnummer')
     toegevoegd = fields.Char('Toegevoegd')
-
-
-_logger = logging.getLogger(__name__)
 
 
 class WicsApiAuth(models.Model):
@@ -99,10 +97,14 @@ class StockIPicking(models.Model):
         Here it is called to initiate the WICS call
         @return: True
         """
-        if not self.env.context.get('wics'):
+        wics = self.env.context.get('wics')
+        _logger.info("\n\n\n")
+        _logger.info("self= %s, wics= %s" % (self, wics))
+        _logger.info("\n\n\n")
+        if not wics:
             return super(StockIPicking, self).action_done()
         else:
-            for picking in self.filtered(lambda self: self.state in ['draft', 'assigned', 'confirmed']):
+            for picking in self.filtered(lambda s: s.state in ['draft', 'assigned', 'confirmed']):
                 if picking.job_id and picking.job_id.state not in ['done','failed']:
                     raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
                 delayed_job = picking.with_delay(description=picking.name).wics_order_process()
