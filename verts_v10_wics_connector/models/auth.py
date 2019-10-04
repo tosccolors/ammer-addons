@@ -91,7 +91,7 @@ class StockIPicking(models.Model):
         _logger.info("\n\n\n")
         super(StockIPicking, self.do_new_transfer()
 
-        @api.multi
+    @api.multi
     def do_transfer(self):
         """ If no pack operation, we do simple action_done of the picking.
         Otherwise, do the pack operations. """
