@@ -89,7 +89,7 @@ class StockIPicking(models.Model):
         _logger.info("\n\n\n")
         _logger.info("self= %s" % (self))
         _logger.info("\n\n\n")
-        return super(StockIPicking, self.do_new_transfer()
+        return super(StockIPicking, self).do_new_transfer()
 
     @api.multi
     def do_transfer(self):
