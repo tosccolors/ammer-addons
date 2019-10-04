@@ -85,6 +85,13 @@ class StockIPicking(models.Model):
     issue = fields.Text(string='Issue')
 
     @api.multi
+    def do_new_transfer(self):
+        _logger.info("\n\n\n")
+        _logger.info("self= %s" % (self))
+        _logger.info("\n\n\n")
+        super(StockIPicking, self.do_new_transfer()
+
+        @api.multi
     def do_transfer(self):
         """ If no pack operation, we do simple action_done of the picking.
         Otherwise, do the pack operations. """
