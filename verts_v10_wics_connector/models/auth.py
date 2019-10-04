@@ -101,15 +101,18 @@ class StockIPicking(models.Model):
         _logger.info("\n\n\n")
         _logger.info("self= %s, wics= %s" % (self, wics))
         _logger.info("\n\n\n")
-        if not wics:
-            return super(StockIPicking, self).action_done()
-        else:
-            for picking in self.filtered(lambda s: s.state in ['draft', 'assigned', 'confirmed']):
+        import pdb; pdb.set_trace()
+        if wics:
+            pickings = self.filtered(lambda s: s.state in ['draft', 'assigned', 'confirmed'])
+            _logger.info("\n\n\n")
+            _logger.info("pickings= %s, state= %s" % (pickings, wics))
+            _logger.info("\n\n\n")
+            for picking in pickings:
                 if picking.job_id and picking.job_id.state not in ['done','failed']:
                     raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
                 delayed_job = picking.with_delay(description=picking.name).wics_order_process()
                 picking.job_id = delayed_job.id
-        return True
+        return super(StockIPicking, self).action_done()
 
     @job()
     @api.multi
