@@ -95,31 +95,44 @@ class StockIPicking(models.Model):
     def do_transfer(self):
         """ If no pack operation, we do simple action_done of the picking.
         Otherwise, do the pack operations. """
-        super(StockIPicking, self.with_context(wics=True)).do_transfer()
+        res = super(StockIPicking, self.with_context(wics=True)).do_transfer()
+        done = True
+        for picking in self:
+            for move_line in picking.move_lines:
+                if move_line.state != 'done':
+                    done = False
+                    break
+            if done:
+                if picking.job_id and picking.job_id.state not in ['done', 'failed']:
+                    raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
+                delayed_job = picking.with_delay(description=picking.name).wics_order_process()
+                picking.job_id = delayed_job.id
+        return res
 
-    @api.multi
-    def action_done(self):
-        """Inherited:Changes picking state to done by processing the Stock Moves of the Picking
-        Normally that happens when the button "Done" is pressed on a Picking view.
-        Here it is called to initiate the WICS call
-        @return: True
-        """
-        res = super(StockIPicking, self).action_done()
-        if res:
-            wics = self.env.context.get('wics')
-            _logger.info("\n\n\n")
-            _logger.info("self= %s, wics= %s" % (self, wics))
-            _logger.info("\n\n\n")
-            if wics:
-                for picking in self:
-                    _logger.info("\n\n\n")
-                    _logger.info("pickings= %s, state= %s" % (picking, picking.state))
-                    _logger.info("\n\n\n")
-                    if picking.job_id and picking.job_id.state not in ['done','failed']:
-                        raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
-                    delayed_job = picking.with_delay(description=picking.name).wics_order_process()
-                    picking.job_id = delayed_job.id
-        return True
+
+    # @api.multi
+    # def action_done(self):
+    #     """Inherited:Changes picking state to done by processing the Stock Moves of the Picking
+    #     Normally that happens when the button "Done" is pressed on a Picking view.
+    #     Here it is called to initiate the WICS call
+    #     @return: True
+    #     """
+    #     res = super(StockIPicking, self).action_done()
+    #     if res:
+    #         wics = self.env.context.get('wics')
+    #         _logger.info("\n\n\n")
+    #         _logger.info("self= %s, wics= %s" % (self, wics))
+    #         _logger.info("\n\n\n")
+    #         if wics:
+    #             for picking in self:
+    #                 _logger.info("\n\n\n")
+    #                 _logger.info("pickings= %s, state= %s" % (picking, picking.state))
+    #                 _logger.info("\n\n\n")
+    #                 if picking.job_id and picking.job_id.state not in ['done','failed']:
+    #                     raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
+    #                 delayed_job = picking.with_delay(description=picking.name).wics_order_process()
+    #                 picking.job_id = delayed_job.id
+    #     return True
 
     @job()
     @api.multi
