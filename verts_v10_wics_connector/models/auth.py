@@ -104,22 +104,22 @@ class StockIPicking(models.Model):
         Here it is called to initiate the WICS call
         @return: True
         """
-        wics = self.env.context.get('wics')
-        _logger.info("\n\n\n")
-        _logger.info("self= %s, wics= %s" % (self, wics))
-        _logger.info("\n\n\n")
-#        import pdb; pdb.set_trace()
-        if wics:
-            pickings = self.filtered(lambda s: s.state in ['draft', 'assigned', 'confirmed'])
-            for picking in pickings:
-                _logger.info("\n\n\n")
-                _logger.info("pickings= %s, state= %s" % (picking, picking.state))
-                _logger.info("\n\n\n")
-                if picking.job_id and picking.job_id.state not in ['done','failed']:
-                    raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
-                delayed_job = picking.with_delay(description=picking.name).wics_order_process()
-                picking.job_id = delayed_job.id
-        return super(StockIPicking, self).action_done()
+        res = super(StockIPicking, self).action_done()
+        if res:
+            wics = self.env.context.get('wics')
+            _logger.info("\n\n\n")
+            _logger.info("self= %s, wics= %s" % (self, wics))
+            _logger.info("\n\n\n")
+            if wics:
+                for picking in self:
+                    _logger.info("\n\n\n")
+                    _logger.info("pickings= %s, state= %s" % (picking, picking.state))
+                    _logger.info("\n\n\n")
+                    if picking.job_id and picking.job_id.state not in ['done','failed']:
+                        raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
+                    delayed_job = picking.with_delay(description=picking.name).wics_order_process()
+                    picking.job_id = delayed_job.id
+        return True
 
     @job()
     @api.multi
