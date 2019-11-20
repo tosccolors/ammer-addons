@@ -106,7 +106,7 @@ class StockIPicking(models.Model):
                 if picking.job_id and picking.job_id.state not in ['done', 'failed']:
                     raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
                 delayed_job = picking.with_delay(description=picking.name).wics_order_process()
-                picking.job_id = delayed_job.id
+                picking.job_id = delayed_job.uuid
         return res
 
 
