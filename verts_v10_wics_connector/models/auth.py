@@ -107,7 +107,7 @@ class StockIPicking(models.Model):
                     raise UserError(_("Job Queue is still running for this picking: %s"), picking.name)
                 delayed_job = picking.with_delay(description=picking.name).wics_order_process()
                 if delayed_job:
-                    queue_id = self.env['queue.job'].search(['uuid','=', delayed_job.uuid])
+                    queue_id = self.env['queue.job'].search([('uuid','=', delayed_job.uuid)])
                     print ("delayed_job++++++++++", delayed_job, delayed_job.uuid)
                     if queue_id:
                         picking.job_id = queue_id.id
