@@ -213,9 +213,10 @@ class StockIPicking(models.Model):
                 },
                 "lines": child
             }
+            task_json = json.dumps(task)
             # created dictionary using of post method create order on wics server and order is created on wics server
             try:
-                resp = requests.post(config.endpoint, auth=auth, json=task,
+                resp = requests.post(config.endpoint, auth=auth, json=task_json,
                                  headers=headers)
 #            if resp.ok:
                 # if data is none or failure message
