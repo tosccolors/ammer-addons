@@ -3,7 +3,8 @@ from odoo import models, fields, api, _
 import requests
 import json
 from odoo.exceptions import ValidationError, UserError
-from odoo.addons.queue_job.job import job
+from odoo.addons.queue_job.job import job, related_action
+from odoo.addons.queue_job.exception import FailedJobError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -213,9 +214,10 @@ class StockIPicking(models.Model):
                 "lines": child
             }
             # created dictionary using of post method create order on wics server and order is created on wics server
-            resp = requests.post(config.endpoint, auth=auth, json=task,
+            try:
+                resp = requests.post(config.endpoint, auth=auth, json=task,
                                  headers=headers)
-            if resp.ok:
+#            if resp.ok:
                 # if data is none or failure message
                 resp = json.loads(resp.text)
                 if resp['success'] == False:
@@ -224,6 +226,10 @@ class StockIPicking(models.Model):
                 else:
                     self.wics_status = 'success'
                     self.with_context(wics=False).action_done()
+            except Exception as e:
+                raise FailedJobError(
+                    _('Error post: %s') % (e))
+
 
     # here is check_shipment() cron job method for check order shipments,
     # configurable in cron, default once every hour
