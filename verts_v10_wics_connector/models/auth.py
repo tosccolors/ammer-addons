@@ -213,6 +213,7 @@ class StockIPicking(models.Model):
                 },
                 "lines": child
             }
+            import pdb; pdb.set_trace()
             task_json = json.dumps(task)
             # created dictionary using of post method create order on wics server and order is created on wics server
             try:
