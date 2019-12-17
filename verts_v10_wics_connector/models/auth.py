@@ -215,6 +215,7 @@ class StockIPicking(models.Model):
             }
             import pdb; pdb.set_trace()
             task_json = json.dumps(task)
+            test = json.loads(task_json)
             # created dictionary using of post method create order on wics server and order is created on wics server
             try:
                 resp = requests.post(config.endpoint, auth=auth, json=task_json,
