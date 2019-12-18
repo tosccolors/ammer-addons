@@ -7,7 +7,9 @@
 			<field name="model">wics.api.auth</field>
 			<field name="arch" type="xml">
 				<tree string="Authentication">
-					<!--<field name="name"/>-->
+					<field name="purpose"/>
+					<field name="active"/>
+					<field name="test"/>
 					<field name="auth_key"/>
 					<field name="secret_key"/>
 				</tree>
@@ -22,12 +24,23 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="endpoint" required="1" placeholder="http://test.servicelayer.wics
-								.nl/api/login"/>
-								<field name="auth_key" required="1" placeholder="Authentication Key"/>
-								<field name="secret_key" required="1" placeholder="Secret key"/>
-								<button name="wics_action_request" string="Test Connection" type="object"
-										class="btn-primary"/>
+								<field name="purpose"/>
+								<field name="active"/>
+								<field name="test"/>
+								<field name="endpoint"
+									   required="1"
+									   placeholder="http://test.servicelayer.wics.nl/api/login"/>
+								<field name="auth_key"
+									   required="1"
+									   placeholder="Authentication Key"/>
+								<field name="secret_key"
+									   required="1"
+									   placeholder="Secret key"/>
+								<button name="wics_action_request"
+										string="Test Connection"
+										type="object"
+										class="btn-primary"
+										attrs="{'invisible': [('purpose', '!=','login')]}"/>
 							</group>
 						</group>
 					</sheet>

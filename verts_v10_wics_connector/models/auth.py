@@ -23,10 +23,29 @@ class ResPartner(models.Model):
 class WicsApiAuth(models.Model):
     _name='wics.api.auth'
     _description = 'Wics API config interface'
-    endpoint = fields.Char(string='Endpoint',
-                           help="Protocol, domain and method, e.g. http://test.servicelayer.wics.nl/api/login")
-    auth_key = fields.Char('Authentication Key')
-    secret_key = fields.Char('Secret Key')
+    purpose = fields.Selection(
+        [('login', 'Login (test purposes)'),
+        ('order', 'Order'),
+        ('shipment', 'Shipment'),
+         ('stock', 'Stock')],
+        string='Purpose'
+    )
+    active = fields.Boolean(
+        default=True,
+        help="By unchecking the active field, you may hide an endpoint without deleting it."
+    )
+    test = fields.Boolean(
+        string='Test Endpoint')
+    endpoint = fields.Char(
+        string='Endpoint',
+        help="Protocol, domain and method, e.g. http://test.servicelayer.wics.nl/api/login"
+    )
+    auth_key = fields.Char(
+        'Authentication Key'
+    )
+    secret_key = fields.Char(
+        'Secret Key'
+    )
 
 
     # show only first record to configure, no options to create an additional one
@@ -35,7 +54,10 @@ class WicsApiAuth(models.Model):
         configurations = self.search([])
         if not configurations:
             endpoint = "http://test.servicelayer.wics.nl/api/login"
-            self.write({'endpoint': endpoint})
+            self.write({'endpoint': endpoint,
+                        'purpose': 'login',
+                        'test': True,
+                        })
             configuration = self.id
             _logger.info("Wics order interface configuration record created")
         else:
@@ -144,11 +166,11 @@ class StockIPicking(models.Model):
     def wics_order_process(self):
         self.ensure_one()
         # here is it get the api authentication values using of search
-        config = self.env['wics.api.auth'].search([])[0]
+        config = self.env['wics.api.auth'].search([('purpose','=','login')])
         if not config:
-            return "No Wics order interface configuration record found"
+            return "No Wics order interface configuration record found for login"
         if not config.endpoint or not config.auth_key or not config.secret_key:
-            return "Incomplete Wics order interface configuration. Need input on endpoint, auth_key and " \
+            return "Incomplete Wics order interface configuration for login. Need input on endpoint, auth_key and " \
                    "secret_key. "
 
         username = config.auth_key  # 'BdZbnhPKXQTzbiOPKuPv'
@@ -213,9 +235,15 @@ class StockIPicking(models.Model):
                 },
                 "lines": child
             }
-            import pdb; pdb.set_trace()
+#            import pdb; pdb.set_trace()
             task_json = json.dumps(task)
-            test = json.loads(task_json)
+#            test = json.loads(task_json)
+            config = self.env['wics.api.auth'].search([('purpose', '=', 'order')])
+            if not config:
+                return "No Wics order interface configuration record found for order"
+            if not config.endpoint or not config.auth_key or not config.secret_key:
+                return "Incomplete Wics order interface configuration for order. Need input on endpoint, auth_key and " \
+                       "secret_key. "
             # created dictionary using of post method create order on wics server and order is created on wics server
             try:
                 resp = requests.post(config.endpoint, auth=auth, json=task_json,
@@ -241,13 +269,12 @@ class StockIPicking(models.Model):
         picking_ids = self.search([('wics_status', '=', 'success')])
         if not picking_ids:
             return
-        config = self.env['wics.api.auth'].search([])[0]
+        config = self.env['wics.api.auth'].search([('purpose', '=', 'login')])
         if not config:
-            return "No Wics order interface configuration record found"
+            return "No Wics order interface configuration record found for login"
         if not config.endpoint or not config.auth_key or not config.secret_key:
-            return "Incomplete Wics order interface configuration. Need input on endpoint, auth_key and " \
+            return "Incomplete Wics order interface configuration for login. Need input on endpoint, auth_key and " \
                    "secret_key. "
-
         username = config.auth_key  # 'BdZbnhPKXQTzbiOPKuPv'
         password = config.secret_key  # 'HzCyjESQKNWvQkjEwVqR'
         auth = (username, password)
@@ -255,9 +282,15 @@ class StockIPicking(models.Model):
         # send request on wics server with api authentication
         result = requests.get(config.endpoint, auth=auth, headers=headers)
         if result.ok:
+            config = self.env['wics.api.auth'].search([('purpose', '=', 'shipment')])
+            if not config:
+                return "No Wics order interface configuration record found for shipment"
+            if not config.endpoint or not config.auth_key or not config.secret_key:
+                return "Incomplete Wics order interface configuration for shipment. " \
+                       "Need input on endpoint, auth_key and secret_key. "
             for picking in picking_ids:
                 wics = picking.origin
-                url = "http://test.servicelayer.wics.nl/api/shipment/%s" % (wics)
+                url = config.endpoint + wics
                 # then again send request for wics server shipments and get the success
                 resp_get = requests.get(url, auth=auth, headers=headers)
                 if resp_get.ok:
