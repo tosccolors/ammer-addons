@@ -244,10 +244,10 @@ class StockIPicking(models.Model):
             if not config.endpoint or not config.auth_key or not config.secret_key:
                 return "Incomplete Wics order interface configuration for order. Need input on endpoint, auth_key and " \
                        "secret_key. "
-            print config.endpoint, task_json
+            print config.endpoint, task
             # created dictionary using of post method create order on wics server and order is created on wics server
             try:
-                resp = requests.post(config.endpoint, auth=auth, json=task_json,
+                resp = requests.post(config.endpoint, auth=auth, json=task,
                                  headers=headers)
 #            if resp.ok:
                 # if data is none or failure message
