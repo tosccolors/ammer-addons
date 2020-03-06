@@ -31,7 +31,7 @@ Wics API Warehouse order Interface.
     """,
     'author': 'VERTS Services India Private Limited', 'Magnus'
     'website': 'https://www.verts.co.in',
-    'depends': ['base','stock','queue_job'],
+    'depends': ['base','stock','queue_job','partner_street_number_extension'],
     'data': [
         'security/ir.model.access.csv',
         'views/auth_view.xml',

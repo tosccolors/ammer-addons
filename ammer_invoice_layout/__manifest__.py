@@ -27,6 +27,7 @@
     "depends": [
         "base",
         "account",
+        'sale'
     ],
     "summary": "Amsterdam Merchandising Account Invoice Layout",
     "description": """

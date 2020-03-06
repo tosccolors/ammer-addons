@@ -13,12 +13,6 @@ _logger = logging.getLogger(__name__)
 # other one is secret_key to put the api Secret key values
 # and then click on Connection Test button on view -- this button work on function action_request
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-
-    house_no = fields.Integer('huisnummer')
-    toegevoegd = fields.Char('Toegevoegd')
-
 
 class WicsApiAuth(models.Model):
     _name='wics.api.auth'
@@ -195,15 +189,16 @@ class StockIPicking(models.Model):
                 "deliveryDate": self.min_date,
                 "webshopId": 1,
                 "note": self.note or " ",
+                "type": self.sale_id.incoterm.code if self.sale_id.incoterm.code != 'SPO' else 'SPOED' or False,
                 "rembours": 12.5,
                 "tag": "Afhalen in Werkendam",
                 "invoiceAddress": {
                     "name": self.partner_id.name,
                     "nameExtension": " ",
                     "company": "WICS",
-                    "street": self.partner_id.street or " ",
+                    "street": self.partner_id.street_name or " ",
                     "streetNumber": self.partner_id.street_number or " ",
-                    "extension": self.partner_id.toegevoegd or " ",
+                    "extension": self.partner_id.street_number_extension or " ",
                     "secondAddressLine": self.partner_id.street2 or " ",
                     "thirdAddressLine": " ",
                     "zipcode": self.partner_id.zip or " ",
@@ -219,9 +214,9 @@ class StockIPicking(models.Model):
                     "name": self.partner_id.name,
                     "nameExtension": " ",
                     "company": "WICS",
-                    "street": self.partner_id.street or " ",
+                    "street": self.partner_id.street_name or " ",
                     "streetNumber": self.partner_id.street_number or " ",
-                    "extension": self.partner_id.toegevoegd or " ",
+                    "extension": self.partner_id.street_number_extension or " ",
                     "secondAddressLine": self.partner_id.street2 or " ",
                     "thirdAddressLine": " ",
                     "zipcode": self.partner_id.zip or " ",
